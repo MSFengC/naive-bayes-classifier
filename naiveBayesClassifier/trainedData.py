@@ -5,16 +5,17 @@ from naiveBayesClassifier.ExceptionNotSeen import NotSeen
 class TrainedData(object):
     def __init__(self):
         self.docCountOfClasses = {}
-        self.frequencies = {}
+        self.frequencies = {'title':{},'text':{}}
 
     def increaseClass(self, className, byAmount = 1):
         self.docCountOfClasses[className] = self.docCountOfClasses.get(className, 0) + 1
 
-    def increaseToken(self, token, className, byAmount = 1):
-        if not token in self.frequencies:
-                self.frequencies[token] = {}
+    def increaseToken(self, source, token, className, byAmount = 1):
+        if not token in self.frequencies[source]:
+                self.frequencies[source][token] = {}
 
-        self.frequencies[token][className] = self.frequencies[token].get(className, 0) + 1
+        self.frequencies[source][token][className] = self.frequencies[source][token].get(className, 0) + 1
+
 
     def decreaseToken(self, token, className, byAmount=1):
         if token not in self.frequencies:
@@ -48,9 +49,14 @@ class TrainedData(object):
         """
         return self.docCountOfClasses.get(className, None)
 
-    def getFrequency(self, token, className):
-        if token in self.frequencies:
-            foundToken = self.frequencies[token]
+    def getParameterCount(self, source):
+
+        return len(self.frequencies[source].keys())
+
+    def getFrequency(self, source, token, className):
+        if token in self.frequencies[source]:
+            foundToken = self.frequencies[source][token]
             return foundToken.get(className)
         else:
-            raise NotSeen(token)
+            # raise NotSeen(token)
+            return None
